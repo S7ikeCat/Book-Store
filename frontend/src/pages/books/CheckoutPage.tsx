@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { CartItem } from "../books/CartPage";
-import { clearCart } from "../../redux/features/cart/cartSlice"; // <- импорт экшена для очистки корзины
+import { clearCart } from "../../redux/features/cart/cartSlice"; // импорт экшена для очистки корзины
 
 const COUNTRY_CONFIG = {
   RU: { phoneCode: "+7", phoneLength: 10, label: "Russia" },
@@ -42,7 +42,7 @@ interface OrderData {
 
 const decodeToken = (token: string) => {
   try {
-    const payload = token.split('.')[1];
+    const payload = token.split(".")[1];
     return JSON.parse(atob(payload));
   } catch {
     return null;
@@ -51,6 +51,8 @@ const decodeToken = (token: string) => {
 
 const CheckOutPage: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const cartItems = useSelector((state: RootState) => state.cart.cartItems);
   const totalPrice = cartItems.reduce((sum, item) => sum + item.newPrice * item.quantity, 0).toFixed(2);
 
@@ -67,10 +69,9 @@ const CheckOutPage: React.FC = () => {
   const [orderPlaced, setOrderPlaced] = useState<boolean>(false);
   const [orderData, setOrderData] = useState<OrderData | null>(null);
 
+  // Устанавливаем email, если есть залогиненный пользователь
   useEffect(() => {
-    if (storedEmail) {
-      setValue("email", storedEmail);
-    }
+    if (storedEmail) setValue("email", storedEmail);
   }, [storedEmail, setValue]);
 
   const handleCountryChange = (country: CountryKey) => {
@@ -80,6 +81,11 @@ const CheckOutPage: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<CheckoutFormData> = (data) => {
+    if (cartItems.length === 0) {
+      alert("Your cart is empty. Add products before placing an order.");
+      return;
+    }
+
     const fullPhone = COUNTRY_CONFIG[selectedCountry].phoneCode + data.phone;
     const order: OrderData = {
       userEmail: data.email,
@@ -91,20 +97,20 @@ const CheckOutPage: React.FC = () => {
     };
 
     console.log("ORDER:", order);
-
     setOrderData(order);
     setOrderPlaced(true);
 
-    // ✅ Очищаем корзину после заказа
+    // Очистка корзины
     dispatch(clearCart());
   };
 
+  // Рендер чека после успешного заказа
   if (orderPlaced && orderData) {
     return (
       <section className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
         <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md text-center">
           <h2 className="text-2xl font-bold mb-4">🎉 Order Placed Successfully!</h2>
-          <p className="mb-4">Thank you for your purchase. Your order details:</p>
+          <p className="mb-4">Thank you for your purchase! Here are your order details:</p>
 
           <div className="text-left mb-4">
             <p><strong>Name:</strong> {orderData.shippingInfo.name}</p>
@@ -121,7 +127,7 @@ const CheckOutPage: React.FC = () => {
           </div>
 
           <button
-            onClick={() => setOrderPlaced(false)}
+            onClick={() => navigate("/")}
             className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Back to Shop
@@ -131,39 +137,7 @@ const CheckOutPage: React.FC = () => {
     );
   }
 
-  // Если заказ размещен, показываем чек
-  if (orderPlaced && orderData) {
-    return (
-      <section className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
-        <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md text-center">
-          <h2 className="text-2xl font-bold mb-4">🎉 Order Placed Successfully!</h2>
-          <p className="mb-4">Thank you for your purchase. Your order details:</p>
-
-          <div className="text-left mb-4">
-            <p><strong>Name:</strong> {orderData.shippingInfo.name}</p>
-            <p><strong>Email:</strong> {orderData.userEmail}</p>
-            <p><strong>Phone:</strong> {orderData.phone}</p>
-            <p><strong>Address:</strong> {orderData.shippingInfo.address}, {orderData.shippingInfo.city}, {orderData.shippingInfo.state}, {orderData.shippingInfo.zipcode}, {orderData.country}</p>
-            <p><strong>Total Price:</strong> ${orderData.totalPrice}</p>
-            <p><strong>Items:</strong></p>
-            <ul className="list-disc ml-5">
-              {orderData.items.map((item: CartItem, index: number) => (
-                <li key={index}>{item.title} x {item.quantity} (${item.newPrice} each)</li>
-              ))}
-            </ul>
-          </div>
-
-          <button
-            onClick={() => setOrderPlaced(false)}
-            className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Back to Shop
-          </button>
-        </div>
-      </section>
-    );
-  }
-
+  // Основная форма оформления заказа
   return (
     <section>
       <div className="min-h-screen p-6 bg-gray-100 flex items-center justify-center">
@@ -253,6 +227,7 @@ const CheckOutPage: React.FC = () => {
                       {...register("address", { required: "Address is required" })}
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                     />
+                    {errors.address && <p className="text-red-500 text-xs">{errors.address.message}</p>}
                   </div>
 
                   {/* City */}
@@ -262,6 +237,7 @@ const CheckOutPage: React.FC = () => {
                       {...register("city", { required: "City is required" })}
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                     />
+                    {errors.city && <p className="text-red-500 text-xs">{errors.city.message}</p>}
                   </div>
 
                   {/* State */}
@@ -271,6 +247,7 @@ const CheckOutPage: React.FC = () => {
                       {...register("state", { required: "State is required" })}
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                     />
+                    {errors.state && <p className="text-red-500 text-xs">{errors.state.message}</p>}
                   </div>
 
                   {/* Zipcode */}
@@ -280,6 +257,7 @@ const CheckOutPage: React.FC = () => {
                       {...register("zipcode", { required: "Zipcode is required" })}
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                     />
+                    {errors.zipcode && <p className="text-red-500 text-xs">{errors.zipcode.message}</p>}
                   </div>
 
                   {/* Terms checkbox */}
