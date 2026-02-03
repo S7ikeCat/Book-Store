@@ -7,6 +7,7 @@ import CartPage from "../pages/books/CartPage";
 import CheckOutPage from "../pages/books/CheckoutPage";
 import SingleBook from "../pages/books/SingleBook";
 import Dashboard from "../components/Dashboard";
+import RequireAdmin from "../components/RequireAdmin";
 
 
 const router = createBrowserRouter([
@@ -48,8 +49,12 @@ const router = createBrowserRouter([
             },
             {
                 path: "/dashboard",
-                element: <Dashboard />
-            },
+                element: (
+                  <RequireAdmin>
+                    <Dashboard />
+                  </RequireAdmin>
+                )
+              },
               
               
         ]

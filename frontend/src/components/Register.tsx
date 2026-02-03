@@ -26,14 +26,15 @@ const Register = () => {
       });
 
       const resData = await response.json();
-
       if (!response.ok) {
-        setMessage(resData.message || "Registration failed. Please try again.");
+        setMessage(resData.message || "Registration failed");
         return;
       }
-
+      
+      // Сохранять роль здесь необязательно
       setMessage("Registration successful!");
-      navigate("/login"); // перенаправление на login
+      navigate("/login");
+       // перенаправление на login
     } catch {
       setMessage("Registration failed. Please try again.");
     }
