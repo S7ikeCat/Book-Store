@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const { pool } = require('./src/db/postgres'); // путь к твоему postgres.js
 const authRoutes = require('./routes/auth'); // путь к твоим маршрутам auth.js
+const orderRoutes = require("./routes/orders");
+
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -16,6 +18,8 @@ app.use(express.json()); // для парсинга JSON в body
 
 // --- Routes ---
 app.use('/api/auth', authRoutes);
+
+app.use("/api/orders", orderRoutes);
 
 // --- Тестовый root ---
 app.get('/', (req, res) => {

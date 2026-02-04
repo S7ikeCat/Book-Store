@@ -28,7 +28,7 @@ export type Book = {
 /* --------------------------
   Список категорий для фильтрации
 --------------------------- */
-const categories = ["Choose a genre", "Business", "Fiction", "Horror", "Adventure"];
+const categories = ["All", "Business", "Fiction", "Horror", "Adventure"];
 
 /* --------------------------
   Компонент TopSellers

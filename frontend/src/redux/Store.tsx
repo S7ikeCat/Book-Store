@@ -1,13 +1,21 @@
 import { configureStore } from '@reduxjs/toolkit'
-import cartReducer from "../redux/features/cart/cartSlice"
+import cartReducer from '../redux/features/cart/cartSlice'
+import favoritesReducer from '../redux/features/favorites/favorites'
+import authReducer from './features/auth/authSlice'
+import { ordersApi } from './features/orders/ordersSlice' // 👈 здесь мы импортируем named export, а не default
 
 export const store = configureStore({
   reducer: {
-    cart: cartReducer
+    cart: cartReducer,
+    favorites: favoritesReducer,
+    auth: authReducer,
+    // Подключаем RTK Query reducer под ключ ordersApi.reducerPath
+    [ordersApi.reducerPath]: ordersApi.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(ordersApi.middleware), // 👈 подключаем middleware для RTK Query
 })
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
+// Типы для useSelector и dispatch
 export type RootState = ReturnType<typeof store.getState>
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch

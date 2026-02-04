@@ -6,11 +6,20 @@ import { getImgUrl } from "../../utils/getImgUrl";
 import type { Book } from "../home/TopSellers";
 import booksData from "../../../public/books.json"; 
 import { useEffect } from "react";
+import { HiOutlineHeart, HiHeart } from "react-icons/hi";
+import { toggleFavorite } from "../../redux/features/favorites/favorites";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../redux/Store";
+
 
 
 const SingleBook = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
+
+  const favorites = useSelector(
+    (state: RootState) => state.favorites.items
+  );
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
@@ -25,6 +34,11 @@ const SingleBook = () => {
       </div>
     );
   }
+
+  
+  
+  const isFavorite = favorites.some(item => item._id === book._id);
+  
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 bg-white shadow-md">
@@ -52,25 +66,40 @@ const SingleBook = () => {
             <p className="text-gray-700 leading-relaxed">{book.description}</p>
           </div>
 
-          {/* --------- Price & Add to Cart --------- */}
           <div className="mt-8 flex flex-col sm:flex-row sm:items-center sm:gap-6">
-            <div className="flex items-baseline gap-3 mb-4 sm:mb-0">
-              <span className="text-2xl sm:text-3xl font-bold text-red-500">
-                ${book.newPrice}
-              </span>
-              <span className="text-gray-400 line-through text-lg">
-                ${book.oldPrice}
-              </span>
-            </div>
+  {/* PRICE */}
+  <div className="flex items-baseline gap-3 mb-4 sm:mb-0">
+    <span className="text-2xl sm:text-3xl font-bold text-red-500">
+      ${book.newPrice}
+    </span>
+    <span className="text-gray-400 line-through text-lg">
+      ${book.oldPrice}
+    </span>
 
-            <button
-              onClick={() => dispatch(addToCart(book))}
-              className="btn-primary flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300 w-full sm:w-auto justify-center"
-            >
-              <FiShoppingCart className="text-xl" />
-              Add to Cart
-            </button>
-          </div>
+    {/* ❤️ FAVORITE */}
+    <button
+      onClick={() => dispatch(toggleFavorite(book))}
+      className="ml-3 transition-transform hover:scale-110"
+      title="Add to favorites"
+    >
+      {isFavorite ? (
+      <HiHeart className="text-purple-700 w-6 h-6" />
+    ) : (
+      <HiOutlineHeart className="text-gray-800 w-6 h-6" />
+    )}
+    </button>
+  </div>
+
+  {/* ADD TO CART */}
+  <button
+    onClick={() => dispatch(addToCart(book))}
+    className="btn-primary flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300 w-full sm:w-auto justify-center"
+  >
+    <FiShoppingCart className="text-xl" />
+    Add to Cart
+  </button>
+</div>
+
         </div>
       </div>
     </div>

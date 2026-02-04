@@ -6,8 +6,10 @@ import Register from "../components/Register";
 import CartPage from "../pages/books/CartPage";
 import CheckOutPage from "../pages/books/CheckoutPage";
 import SingleBook from "../pages/books/SingleBook";
-import Dashboard from "../components/Dashboard";
+import Dashboard from "../pages/dashboard/Dashboard";
 import RequireAdmin from "../components/RequireAdmin";
+import Wishes from "../pages/books/Wishes";
+import OrderPage from "../pages/books/OrderPage";
 
 
 const router = createBrowserRouter([
@@ -21,7 +23,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "/orders",
-                element: <div>Orders</div>
+                element: <OrderPage/>
             },
             {
                 path: "/about",
@@ -55,7 +57,10 @@ const router = createBrowserRouter([
                   </RequireAdmin>
                 )
               },
-              
+              {
+                path: "/favorites",
+                element: <Wishes />
+            },
               
         ]
     },

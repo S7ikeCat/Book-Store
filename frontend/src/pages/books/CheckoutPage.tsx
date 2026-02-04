@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import type { CartItem } from "../books/CartPage";
 import { clearCart } from "../../redux/features/cart/cartSlice"; // импорт экшена для очистки корзины
+import axios from "axios";
 
 const COUNTRY_CONFIG = {
   RU: { phoneCode: "+7", phoneLength: 10, label: "Russia" },
@@ -80,12 +81,12 @@ const CheckOutPage: React.FC = () => {
     setValue("phone", "");
   };
 
-  const onSubmit: SubmitHandler<CheckoutFormData> = (data) => {
+  const onSubmit: SubmitHandler<CheckoutFormData> = async (data) => {
     if (cartItems.length === 0) {
       alert("Your cart is empty. Add products before placing an order.");
       return;
     }
-
+  
     const fullPhone = COUNTRY_CONFIG[selectedCountry].phoneCode + data.phone;
     const order: OrderData = {
       userEmail: data.email,
@@ -95,13 +96,17 @@ const CheckOutPage: React.FC = () => {
       totalPrice,
       shippingInfo: data,
     };
-
-    console.log("ORDER:", order);
-    setOrderData(order);
-    setOrderPlaced(true);
-
-    // Очистка корзины
-    dispatch(clearCart());
+  
+    try {
+      const response = await axios.post("http://localhost:3000/api/orders", order);
+      console.log("ORDER CREATED:", response.data);
+      setOrderData(order);
+      setOrderPlaced(true);
+      dispatch(clearCart());
+    } catch (err) {
+      console.error(err);
+      alert("Failed to place order. Try again.");
+    }
   };
 
   // Рендер чека после успешного заказа

@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { HiBars3CenterLeft } from "react-icons/hi2";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosSearch } from "react-icons/io";
-import { HiOutlineUser, HiOutlineHeart } from "react-icons/hi";
+import { HiOutlineUser } from "react-icons/hi";
+import { HiOutlineHeart, HiHeart } from "react-icons/hi";
 import { FiShoppingCart } from "react-icons/fi";
+import { GoHome } from "react-icons/go";
 
 import avatarIMG from "../assets/avatar.png";
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/Store";
+
+
 
 /* --------------------------
   Навигация пользователя
@@ -39,14 +42,21 @@ const Navbar = () => {
     navigate("/");
   };
 
+
+  const favorites = useSelector(
+    (state: RootState) => state.favorites.items
+  );
+
   return (
     <header className="max-w-screen-2xl mx-auto px-4 py-6">
       <nav className="flex justify-between items-center">
         {/* ---------------- LEFT ---------------- */}
         <div className="flex items-center md:gap-16 gap-4">
-          <Link to="/">
-            <HiBars3CenterLeft className="size-6" />
-          </Link>
+        <Link to="/">
+           <span className="inline-flex w-8 h-8 items-center justify-center">
+                 <GoHome className="w-7 h-7 transition-transform duration-200 hover:scale-110" />
+           </span>
+        </Link>
 
           <div className="relative sm:w-72 w-40">
             <IoIosSearch className="absolute inline-block left-3 inset-y-2" />
@@ -123,7 +133,14 @@ const Navbar = () => {
 
           {/* FAVORITES */}
           <button className="hidden sm:block">
-            <HiOutlineHeart className="size-6" />
+          <Link to="/favorites">
+            {favorites.length > 0 ? (
+                <HiHeart className="size-6 text-purple-700" />
+                ) : (
+                <HiOutlineHeart className="size-6" />
+                )}
+            </Link>
+
           </button>
 
           {/* CART */}
