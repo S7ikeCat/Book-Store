@@ -83,7 +83,7 @@ const SingleBook = () => {
       title="Add to favorites"
     >
       {isFavorite ? (
-      <HiHeart className="text-purple-700 w-6 h-6" />
+      <HiHeart className="text-purple-800 w-6 h-6" />
     ) : (
       <HiOutlineHeart className="text-gray-800 w-6 h-6" />
     )}

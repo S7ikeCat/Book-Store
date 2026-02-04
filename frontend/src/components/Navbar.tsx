@@ -1,16 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosSearch } from "react-icons/io";
-import { HiOutlineUser } from "react-icons/hi";
-import { HiOutlineHeart, HiHeart } from "react-icons/hi";
+import { HiOutlineUser, HiOutlineHeart, HiHeart } from "react-icons/hi";
 import { FiShoppingCart } from "react-icons/fi";
 import { GoHome } from "react-icons/go";
 
 import avatarIMG from "../assets/avatar.png";
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/Store";
-
-
 
 /* --------------------------
   Навигация пользователя
@@ -23,6 +20,8 @@ const navigation = [
 
 const Navbar = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const navigate = useNavigate();
 
   const cartItems = useSelector(
@@ -34,14 +33,15 @@ const Navbar = () => {
   const role = localStorage.getItem("role"); // ADMIN | USER
   const isAuth = !!token;
 
-  // 🚪 Logout
+  // 🚪 Logout с возвратом на главную
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     setDropdownOpen(false);
-    navigate("/");
-  };
 
+    // Перезагрузка страницы и переход на главную
+    window.location.href = "/";
+  };
 
   const favorites = useSelector(
     (state: RootState) => state.favorites.items
@@ -52,14 +52,14 @@ const Navbar = () => {
       <nav className="flex justify-between items-center">
         {/* ---------------- LEFT ---------------- */}
         <div className="flex items-center md:gap-16 gap-4">
-        <Link to="/">
-           <span className="inline-flex w-8 h-8 items-center justify-center">
-                 <GoHome className="w-7 h-7 transition-transform duration-200 hover:scale-110" />
-           </span>
-        </Link>
+          <Link to="/">
+            <span className="inline-flex w-8 h-8 items-center justify-center">
+              <GoHome className="w-7 h-7 transition-transform duration-200 hover:scale-110" />
+            </span>
+          </Link>
 
           <div className="relative sm:w-72 w-40">
-            <IoIosSearch className="absolute inline-block left-3 inset-y-2" />
+            <IoIosSearch className="absolute inline-block left-3 inset-y-2 text-gray-500" />
             <input
               type="text"
               placeholder="Search here"
@@ -126,32 +126,29 @@ const Navbar = () => {
               </>
             ) : (
               <Link to="/login">
-                <HiOutlineUser className="size-6" />
+                <HiOutlineUser className="size-6 text-gray-700" />
               </Link>
             )}
           </div>
 
           {/* FAVORITES */}
           <button className="hidden sm:block">
-          <Link to="/favorites">
-            {favorites.length > 0 ? (
-                <HiHeart className="size-6 text-purple-700" />
-                ) : (
+            <Link to="/favorites">
+              {favorites.length > 0 ? (
+                <HiHeart className="size-6 text-purple-800" />
+              ) : (
                 <HiOutlineHeart className="size-6" />
-                )}
+              )}
             </Link>
-
           </button>
 
           {/* CART */}
           <Link
             to="/cart"
-            className="bg-primary p-1 sm:px-6 px-2 flex items-center rounded-sm"
+            className="bg-primary p-1 sm:px-6 px-2 flex items-center rounded-sm hover:bg-blue-700 transition-colors"
           >
             <FiShoppingCart />
-            <span className="text-sm font-semibold sm:ml-1">
-              {cartItems.length}
-            </span>
+            <span className="text-sm font-semibold sm:ml-1">{cartItems.length}</span>
           </Link>
         </div>
       </nav>

@@ -42,7 +42,7 @@ const TopSellers = () => {
   const [books, setBooks] = useState<Book[]>([]);
   
   // Выбранная категория фильтрации
-  const [selectedCategory, setSelectedCategory] = useState("Choose a genre");
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   /* --------------------------
     useEffect для загрузки данных
@@ -60,7 +60,7 @@ const TopSellers = () => {
     Иначе фильтруем по жанру (category)
   --------------------------- */
   const filteredBooks =
-    selectedCategory === "Choose a genre"
+    selectedCategory === "All"
       ? books
       : books.filter(
           book => book.category.toLowerCase() === selectedCategory.toLowerCase()

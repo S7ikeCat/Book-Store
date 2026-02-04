@@ -1,48 +1,88 @@
 import React from 'react';
-import { useGetOrderByEmailQuery } from '../../redux/features/orders/ordersSlice';
-import { useAuth } from '../../context/AuthContext';
-import type { OrderData } from '../../types/ordersTypes';
+import { useGetOrdersQuery } from '../../redux/features/orders/ordersSlice';
+import { FaTruck, FaDollarSign, FaUser, FaCalendarAlt, FaBoxOpen } from 'react-icons/fa';
 
 const OrderPage: React.FC = () => {
-  const { currentUser } = useAuth();
+  const { data: orders = [], isLoading, isError } = useGetOrdersQuery();
 
-  const email = currentUser?.email || '';
-  const { data: orders = [], isLoading, isError } = useGetOrderByEmailQuery(email);
-
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error getting orders data</div>;
+  if (isLoading)
+    return <div className="text-center mt-10 text-gray-500">Loading orders...</div>;
+  if (isError)
+    return <div className="text-center mt-10 text-red-500">Error fetching orders!</div>;
+  if (orders.length === 0)
+    return <div className="text-center mt-10 text-gray-500">You have no orders yet.</div>;
 
   return (
-    <div className='container mx-auto p-6'>
-      <h2 className='text-2xl font-semibold mb-4'>Your Orders</h2>
-      {orders.length === 0 ? (
-        <div>No orders found!</div>
-      ) : (
-        orders.map((order: OrderData, index) => (
-          <div key={order.id} className="border-b mb-4 pb-4">
-            <p className='p-1 bg-secondary text-white w-10 rounded mb-1'># {index + 1}</p>
-            <h2 className="font-bold">Order ID: {order.id}</h2>
-            <p className="text-gray-600">Email: {order.user_email}</p>
-            <p className="text-gray-600">Total Price: ${order.total_price}</p>
+    <div className="container mx-auto p-6">
+      <h2 className="text-3xl font-bold mb-8 text-center text-black">
+        Your Orders
+      </h2>
 
-            <h3 className="font-semibold mt-2">Shipping Info:</h3>
-            <p>Name: {order.shipping_info.name}</p>
-            <p>Phone: {order.shipping_info.phone}</p>
-            <p>Address: {order.shipping_info.address}, {order.shipping_info.city}, {order.shipping_info.state}, {order.shipping_info.zipcode}, {order.shipping_info.country}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {orders.map((order, idx) => (
+          <div
+            key={idx}
+            className="relative bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+          >
+            {/* Gradient stripe on top */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-300 to-yellow-500"></div>
 
-            <h3 className="font-semibold mt-2">Items:</h3>
-            <ul>
-              {order.items.map((item) => (
-                <li key={item._id}>
-                  {item.title} x {item.quantity} (${item.newPrice} each)
-                </li>
-              ))}
-            </ul>
+            <div className="p-6">
+              {/* Status badge */}
+              <div className="flex justify-end mb-3">
+                <span className="flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-600">
+                  • Processing
+                </span>
+              </div>
 
-            <p className="text-gray-500 text-sm mt-2">Ordered at: {new Date(order.created_at).toLocaleString()}</p>
+              {/* Header: Date */}
+              <div className="flex items-center justify-between mb-4 text-gray-600">
+                <div className="flex items-center gap-2">
+                  <FaCalendarAlt /> {new Date(order.created_at).toLocaleDateString('en-US')}
+                </div>
+                <div className="flex items-center gap-1 font-semibold text-green-600 bg-green-50 px-2 py-1 rounded shadow-sm">
+                  <FaDollarSign /> {Number(order.total_price).toFixed(2)}
+                </div>
+              </div>
+
+              {/* Shipping Info */}
+              <div className="mb-4">
+                <h4 className="flex items-center gap-2 font-semibold mb-1 text-gray-700">
+                  <FaUser /> Shipping Information
+                </h4>
+                <p className="text-gray-600 text-sm">
+                  {order.shipping_info.name}<br />
+                  {order.shipping_info.address}, {order.shipping_info.city}, {order.shipping_info.state}, {order.shipping_info.zipcode}<br />
+                  {order.shipping_info.phone}
+                </p>
+              </div>
+
+              {/* Items */}
+              <div>
+                <h4 className="flex items-center gap-2 font-semibold mb-2 text-gray-700">
+                  <FaBoxOpen /> Items
+                </h4>
+                <ul className="list-disc list-inside space-y-1 text-gray-600">
+                  {order.items.map((item) => (
+                    <li
+                      key={item._id}
+                      className="hover:bg-gray-50 p-1 rounded transition-colors"
+                    >
+                      {item.title} × {item.quantity} (${item.newPrice} each)
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Estimated Delivery */}
+              <div className="mt-4 flex items-center gap-2 text-gray-500 text-sm">
+                <FaTruck />
+                <span>Estimated arrival: within 3-12 days</span>
+              </div>
+            </div>
           </div>
-        ))
-      )}
+        ))}
+      </div>
     </div>
   );
 };

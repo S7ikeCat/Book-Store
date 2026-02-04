@@ -1,11 +1,9 @@
 const express = require("express");
-const { createOrder, getUserOrders } = require("../controllers/orderController");
+const { getUserOrders } = require("../controllers/orderController");
+const authenticate = require("../miffleware/auth");
 const router = express.Router();
 
-// POST /api/orders
-router.post("/", createOrder);
-
-// GET /api/orders/:email
-router.get("/:email", getUserOrders);
+// GET /api/orders — получить заказы текущего пользователя
+router.get("/", authenticate, getUserOrders);
 
 module.exports = router;

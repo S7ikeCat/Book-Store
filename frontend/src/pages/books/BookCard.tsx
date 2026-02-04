@@ -42,7 +42,7 @@ const BookCard = ({ book }: BookCardProps) => {
     className="absolute top-2 right-2 z-10 p-1 bg-white bg-opacity-70 rounded-full shadow hover:bg-opacity-100 transition"
   >
    {isFavorite ? (
-      <HiHeart className="text-purple-700 w-6 h-6" />
+      <HiHeart className="text-purple-800 w-6 h-6" />
     ) : (
       <HiOutlineHeart className="text-gray-800 w-6 h-6" />
     )}
