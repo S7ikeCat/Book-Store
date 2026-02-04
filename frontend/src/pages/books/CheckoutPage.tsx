@@ -98,7 +98,17 @@ const CheckOutPage: React.FC = () => {
     };
   
     try {
-      const response = await axios.post("http://localhost:3000/api/orders", order);
+      const token = localStorage.getItem("token"); // получаем токен
+      const response = await axios.post(
+        "http://localhost:3000/api/orders",
+        order,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // <-- добавляем токен
+          },
+        }
+      );
+  
       console.log("ORDER CREATED:", response.data);
       setOrderData(order);
       setOrderPlaced(true);

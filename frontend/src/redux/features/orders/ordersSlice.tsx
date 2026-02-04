@@ -1,28 +1,21 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import getBaseUrl from "../../../utils/baseURL";
-import type { OrderData } from "../../../types/ordersTypes";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { OrderData } from '../../../types/ordersTypes';
 
 export const ordersApi = createApi({
   reducerPath: 'ordersApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: `${getBaseUrl()}/api/orders`,
-    credentials: 'include',
+    baseUrl: 'http://localhost:3000/api',
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem('token');
+      if (token) headers.set('Authorization', `Bearer ${token}`);
+      return headers;
+    },
   }),
-  tagTypes: ['Orders'],
   endpoints: (builder) => ({
-    createOrder: builder.mutation<OrderData, OrderData>({
-      query: (newOrder) => ({
-        url: "/",
-        method: "POST",
-        body: newOrder,
-      }),
-      invalidatesTags: ['Orders'],
-    }),
-    getOrderByEmail: builder.query<OrderData[], string>({
-      query: (email) => `/${email}`,
-      providesTags: ['Orders'],
+    getOrders: builder.query<OrderData[], void>({
+      query: () => '/orders', // email теперь не нужен, сервер берёт из токена
     }),
   }),
 });
 
-export const { useCreateOrderMutation, useGetOrderByEmailQuery } = ordersApi;
+export const { useGetOrdersQuery } = ordersApi;

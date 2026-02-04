@@ -1,11 +1,12 @@
 const express = require("express");
-const { createOrder, getUserOrders } = require("../controllers/orderController");
+const { getUserOrders, createOrder } = require("../controllers/orderController");
+const authenticate = require("../middleware/auth");
 const router = express.Router();
 
-// POST /api/orders
-router.post("/", createOrder);
+// GET /api/orders — получить заказы текущего пользователя
+router.get("/", authenticate, getUserOrders);
 
-// GET /api/orders/:email
-router.get("/:email", getUserOrders);
+// POST /api/orders — создать новый заказ
+router.post("/", authenticate, createOrder);
 
 module.exports = router;
