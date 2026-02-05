@@ -14,10 +14,13 @@ export const usersApi = createApi({
   }),
   tagTypes: ['Users'], // для автоматического обновления кэша
   endpoints: (builder) => ({
+    // Получение всех пользователей
     getUsers: builder.query<IUser[], void>({
       query: () => '/users',
       providesTags: ['Users'],
     }),
+
+    // Удаление пользователя
     deleteUser: builder.mutation<void, number>({
       query: (id) => ({
         url: `/users/${id}`,
@@ -25,14 +28,16 @@ export const usersApi = createApi({
       }),
       invalidatesTags: ['Users'], // обновляем кэш после удаления
     }),
+
+    // Редактирование пользователя (email + роль)
     editUser: builder.mutation<IUser, { id: number; email: string; role_id: number }>({
-        query: ({ id, email, role_id }) => ({
-          url: `/users/${id}`,
-          method: 'PUT',
-          body: { email, role_id },
-        }),
-        invalidatesTags: ['Users'],
+      query: ({ id, email, role_id }) => ({
+        url: `/users/${id}`,
+        method: 'PUT',
+        body: { email, role_id },
       }),
+      invalidatesTags: ['Users'], // обновляем кэш после изменения
+    }),
   }),
 });
 

@@ -1,7 +1,11 @@
 // src/pages/dashboard/users/UserDashboard.tsx
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
-import { useGetUsersQuery, useEditUserMutation, useDeleteUserMutation } from '../../../redux/features/users/usersApi';
+import {
+  useGetUsersQuery,
+  useEditUserMutation,
+  useDeleteUserMutation,
+} from '../../../redux/features/users/usersApi';
 import type { IUser } from '../../../types/types';
 
 const UserDashboard: React.FC = () => {
@@ -10,7 +14,6 @@ const UserDashboard: React.FC = () => {
   const [deleteUser] = useDeleteUserMutation();
 
   const [editingUserId, setEditingUserId] = useState<number | null>(null);
-  const [emailInput, setEmailInput] = useState<string>('');
   const [roleInput, setRoleInput] = useState<number>(2);
 
   if (isLoading)
@@ -23,36 +26,43 @@ const UserDashboard: React.FC = () => {
     return <div className="text-center mt-10 text-gray-500">No users found.</div>;
 
   const handleEditClick = (user: IUser) => {
+    if (user.email === 'kirill.akhmatshin@gmail.com') return; // защита главного пользователя
     setEditingUserId(user.id);
-    setEmailInput(user.email);
-    setRoleInput(user.role_id);
+    setRoleInput(user.role_id === 1 ? 1 : 2);
   };
 
   const handleEditSave = async () => {
     if (editingUserId === null) return;
 
     try {
-      await editUser({ id: editingUserId, email: emailInput, role_id: roleInput }).unwrap();
+      const userToEdit = users.find((u) => u.id === editingUserId);
+      if (!userToEdit) return;
+
+      await editUser({
+        id: editingUserId,
+        email: userToEdit.email, // email не редактируем
+        role_id: roleInput,
+      }).unwrap();
+
       setEditingUserId(null);
+
       Swal.fire({
         icon: 'success',
-        title: 'User updated!',
-        text: `User's email and role have been successfully updated.`,
+        title: 'Role updated!',
+        text: `User's role has been successfully updated.`,
         showConfirmButton: false,
         timer: 1500,
         timerProgressBar: true,
       });
     } catch (err) {
       console.error('Failed to update user:', err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Failed to update user!',
-      });
+      Swal.fire('Error', 'Failed to update user!', 'error');
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: number, email: string) => {
+    if (email === 'kirill.akhmatshin@gmail.com') return;
+
     const confirm = await Swal.fire({
       title: 'Are you sure?',
       text: 'This user will be deleted permanently!',
@@ -77,11 +87,7 @@ const UserDashboard: React.FC = () => {
       });
     } catch (err) {
       console.error('Failed to delete user:', err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Failed to delete user!',
-      });
+      Swal.fire('Error', 'Failed to delete user!', 'error');
     }
   };
 
@@ -92,7 +98,6 @@ const UserDashboard: React.FC = () => {
       <table className="w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border p-3 text-left">ID</th>
             <th className="border p-3 text-left">Email</th>
             <th className="border p-3 text-left">Role</th>
             <th className="border p-3 text-left">Actions</th>
@@ -101,21 +106,10 @@ const UserDashboard: React.FC = () => {
         <tbody>
           {users.map((user: IUser) => (
             <tr key={user.id} className="hover:bg-gray-50">
-              <td className="border p-3">{user.id}</td>
+              {/* Email */}
+              <td className="border p-3">{user.email}</td>
 
-              <td className="border p-3">
-                {editingUserId === user.id ? (
-                  <input
-                    type="email"
-                    value={emailInput}
-                    onChange={(e) => setEmailInput(e.target.value)}
-                    className="border p-1 rounded w-full"
-                  />
-                ) : (
-                  user.email
-                )}
-              </td>
-
+              {/* Role */}
               <td className="border p-3">
                 {editingUserId === user.id ? (
                   <select
@@ -126,11 +120,20 @@ const UserDashboard: React.FC = () => {
                     <option value={1}>Admin</option>
                     <option value={2}>User</option>
                   </select>
-                ) : user.role_id === 1 ? 'Admin' : user.role_id === 2 ? 'User' : 'Unknown'}
+                ) : user.role_id === 1 ? (
+                  'Admin'
+                ) : user.role_id === 2 ? (
+                  'User'
+                ) : (
+                  'Unknown'
+                )}
               </td>
 
+              {/* Actions */}
               <td className="border p-3 flex gap-2">
-                {editingUserId === user.id ? (
+                {user.email === 'kirill.akhmatshin@gmail.com' ? (
+                  <span className="text-gray-400 italic">The main</span>
+                ) : editingUserId === user.id ? (
                   <>
                     <button
                       onClick={handleEditSave}
@@ -154,7 +157,7 @@ const UserDashboard: React.FC = () => {
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(user.id)}
+                      onClick={() => handleDelete(user.id, user.email)}
                       className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                     >
                       Delete
