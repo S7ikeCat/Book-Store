@@ -10,6 +10,10 @@ import Dashboard from "../pages/dashboard/Dashboard";
 import RequireAdmin from "../components/RequireAdmin";
 import Wishes from "../pages/books/Wishes";
 import OrderPage from "../pages/books/OrderPage";
+import DashboardLayout from "../pages/dashboard/DashboardLayout";
+import UserDashboard from "../pages/dashboard/users/UserDashboard";
+import AdminOrders from "../pages/dashboard/AdminOrders";
+import AdminBooks from "../pages/dashboard/AdminBooks";
 
 
 const router = createBrowserRouter([
@@ -53,9 +57,15 @@ const router = createBrowserRouter([
                 path: "/dashboard",
                 element: (
                   <RequireAdmin>
-                    <Dashboard />
+                    <DashboardLayout />
                   </RequireAdmin>
-                )
+                ),
+                children: [
+                  { path: "", element: <Dashboard /> },
+                  { path: "orders", element: <AdminOrders /> },
+                  { path: "books", element: <AdminBooks /> },
+                  { path: "users", element: <UserDashboard /> },
+                ]
               },
               {
                 path: "/favorites",

@@ -1,8 +1,9 @@
 export interface IUser {
-    id: number;
-    email: string;
-    role: 'user' | 'admin';
-  }
+  role_id: number;
+  id: number;
+  email: string;
+  role: number;
+}
 
   export interface IOrder {
     id: number;
