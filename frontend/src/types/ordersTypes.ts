@@ -19,7 +19,7 @@ export interface OrderItem {
   }
   
   export interface OrderData {
-    id: number; // из базы Orders.id
+    id: number; 
     user_email: string;
     items: OrderItem[];
     total_price: string;

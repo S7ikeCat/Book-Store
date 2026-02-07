@@ -12,8 +12,7 @@ import Wishes from "../pages/books/Wishes";
 import OrderPage from "../pages/books/OrderPage";
 import DashboardLayout from "../pages/dashboard/DashboardLayout";
 import UserDashboard from "../pages/dashboard/users/UserDashboard";
-import AdminOrders from "../pages/dashboard/AdminOrders";
-import AdminBooks from "../pages/dashboard/AdminBooks";
+import OrdersDashboard from "../pages/dashboard/OrdersDashboard";
 
 
 const router = createBrowserRouter([
@@ -62,8 +61,7 @@ const router = createBrowserRouter([
                 ),
                 children: [
                   { path: "", element: <Dashboard /> },
-                  { path: "orders", element: <AdminOrders /> },
-                  { path: "books", element: <AdminBooks /> },
+                  { path: "orders", element: <OrdersDashboard /> },
                   { path: "users", element: <UserDashboard /> },
                 ]
               },

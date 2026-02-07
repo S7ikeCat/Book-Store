@@ -50,6 +50,10 @@ const decodeToken = (token: string) => {
   }
 };
 
+const getTotalItemsCount = (items?: { quantity?: number }[]) => {
+  return items?.reduce((sum, item) => sum + (item.quantity ?? 0), 0) ?? 0;
+};
+
 const CheckOutPage: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -160,7 +164,7 @@ const CheckOutPage: React.FC = () => {
           <div className="mb-6">
             <h2 className="font-semibold text-xl text-gray-600 mb-2">Cash On Delivery</h2>
             <p className="text-gray-500">Total Price: ${totalPrice}</p>
-            <p className="text-gray-500">Items: {cartItems.length}</p>
+            <p className="text-gray-500">Items: {getTotalItemsCount(cartItems)}</p>
           </div>
 
           <div className="bg-white rounded shadow-lg p-4 px-4 md:p-8">

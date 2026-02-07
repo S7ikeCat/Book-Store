@@ -1,4 +1,3 @@
-// src/redux/features/users/usersApi.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { IUser } from '../../../types/types';
 
