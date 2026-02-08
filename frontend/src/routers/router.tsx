@@ -13,6 +13,8 @@ import OrderPage from "../pages/books/OrderPage";
 import DashboardLayout from "../pages/dashboard/DashboardLayout";
 import UserDashboard from "../pages/dashboard/users/UserDashboard";
 import OrdersDashboard from "../pages/dashboard/OrdersDashboard";
+import SingleBookDB from "../pages/books/SingleBookDB";
+import AllTableJsonBooks from "../pages/home/AllTableJsonBooks";
 
 
 const router = createBrowserRouter([
@@ -27,10 +29,6 @@ const router = createBrowserRouter([
             {
                 path: "/orders",
                 element: <OrderPage/>
-            },
-            {
-                path: "/about",
-                element: <div>About</div>
             },
             {
                 path: "/login",
@@ -49,8 +47,16 @@ const router = createBrowserRouter([
                 element: <CheckOutPage/>
             },
             {
+                path: "/books",
+                element: <AllTableJsonBooks />
+            },
+            {
                 path: "/books/:id",
                 element: <SingleBook />
+            },
+            {
+                path: "/db/books/:id",
+                element: <SingleBookDB />
             },
             {
                 path: "/dashboard",

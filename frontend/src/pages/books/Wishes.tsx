@@ -56,6 +56,9 @@ const Wishes = () => {
                 src={getImgUrl(book.coverImage)}
                 alt={book.title}
                 className="h-48 mx-auto mb-4 object-contain"
+                onError={(e) => {
+                  e.currentTarget.src = `http://localhost:3000/uploads/books/${book.coverImage}`;
+                }}
               />
 
               {/* Title */}

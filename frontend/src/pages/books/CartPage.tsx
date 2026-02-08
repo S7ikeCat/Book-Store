@@ -130,6 +130,9 @@ const CartPage: React.FC = () => {
                       alt={item.title}
                       src={getImgUrl(item.coverImage)}
                       className="h-full w-full object-cover object-center"
+                      onError={(e) => {
+                        e.currentTarget.src = `http://localhost:3000/uploads/books/${item.coverImage}`;
+                      }}
                     />
                   </div>
 

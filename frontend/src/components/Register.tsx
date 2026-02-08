@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaGoogle } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
 
@@ -79,13 +78,6 @@ const Register = () => {
             Sign Up
           </button>
         </form>
-
-        <div className="mt-4 flex justify-center">
-          <button className="flex items-center gap-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-            <FaGoogle />
-            Sign Up with Google
-          </button>
-        </div>
 
         <p className="mt-4 text-sm text-center">
           Already have an account? <Link to="/login" className="text-blue-500 hover:text-blue-700">Login</Link>

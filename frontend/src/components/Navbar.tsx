@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { IoIosSearch } from "react-icons/io";
 import { HiOutlineUser } from "react-icons/hi";
 import { HiOutlineHeart, HiHeart } from "react-icons/hi";
 import { FiShoppingCart } from "react-icons/fi";
@@ -58,14 +57,6 @@ const Navbar = () => {
            </span>
         </Link>
 
-          <div className="relative sm:w-72 w-40">
-            <IoIosSearch className="absolute inline-block left-3 inset-y-2" />
-            <input
-              type="text"
-              placeholder="Search here"
-              className="bg-[#EAEAEA] w-full py-1 md:px-8 px-6 rounded-md focus:outline-none"
-            />
-          </div>
         </div>
 
         {/* ---------------- RIGHT ---------------- */}
