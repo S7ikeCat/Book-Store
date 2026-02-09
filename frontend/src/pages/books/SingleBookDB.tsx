@@ -9,14 +9,10 @@ import { HiOutlineHeart, HiHeart } from "react-icons/hi";
 import { toggleFavorite } from "../../redux/features/favorites/favorites";
 import type { RootState } from "../../redux/Store";
 
-const PRODUCTS_API = "http://localhost:3000/api/dashboard/products";
+const PRODUCTS_API = "http://localhost:3000/api/products";
 
 type ApiError = { message?: string };
 
-function getAuthHeaders(): Record<string, string> {
-  const token = localStorage.getItem("token");
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
 
 function isApiError(v: unknown): v is ApiError {
   if (typeof v !== "object" || v === null) return false;
@@ -63,9 +59,8 @@ const SingleBookDB = () => {
 
       setLoading(true);
       try {
-        const res = await fetch(`${PRODUCTS_API}/${numericId}`, {
-          headers: { ...getAuthHeaders() },
-        });
+       
+        const res = await fetch(`${PRODUCTS_API}/${id}`)
 
         const raw: unknown = await res.json();
 

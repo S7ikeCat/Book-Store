@@ -41,6 +41,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("/api/products", require("./routes/productsPublic"));
+
 /* =====================================================
    Middlewares
    ===================================================== */

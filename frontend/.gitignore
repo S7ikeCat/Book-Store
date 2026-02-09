@@ -1,4 +1,17 @@
+# =========================
+# Backend only
+# =========================
+/backend/node_modules/
+/backend/.env
+/backend/.env.*
+!/backend/.env.example
+
+/backend/dist/
+/backend/build/
+
+# =========================
 # Logs
+# =========================
 logs
 *.log
 npm-debug.log*
@@ -7,12 +20,21 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
+# =========================
+# Global node
+# =========================
+node_modules/
+
+# =========================
+# Frontend / build
+# =========================
 dist
 dist-ssr
 *.local
 
-# Editor directories and files
+# =========================
+# Editor / OS
+# =========================
 .vscode/*
 !.vscode/extensions.json
 .idea
