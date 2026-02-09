@@ -20,7 +20,7 @@ import {
 } from "../../../redux/features/users/usersApi";
 import type { IUser } from "../../../types/types";
 
-const MAIN_EMAIL = "kirill.akhmatshin@gmail.com";
+const MAIN_EMAIL = "kirill@gmail.com";
 
 const roleLabel = (roleId: number) =>
   roleId === 1 ? "Admin" : roleId === 2 ? "User" : "Unknown";
